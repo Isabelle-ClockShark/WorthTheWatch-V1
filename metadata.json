@@ -1,0 +1,7 @@
+{
+  "name": "WorthTheWatch",
+  "description": "An advanced movie and TV show recommendation engine that tracks your progress and uses Gemini AI to suggest your next favorite watch based on your viewing habits, weather, and daily releases.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
