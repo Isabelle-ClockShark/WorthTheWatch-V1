@@ -61,4 +61,5 @@ export interface UserSettings {
   selectedServices: string[];
   filterByServices: boolean;
   declinedMediaTitles: string[];
+  isDarkMode: boolean;
 }

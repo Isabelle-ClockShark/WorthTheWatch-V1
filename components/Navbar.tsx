@@ -5,11 +5,16 @@ interface NavbarProps {
   onNavigate: (view: 'dashboard' | 'library' | 'ai') => void;
   activeView: string;
   onOpenAccount: () => void;
+  isDarkMode: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeView, onOpenAccount }) => {
+const Navbar: React.FC<NavbarProps> = ({ onNavigate, activeView, onOpenAccount, isDarkMode }) => {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass px-6 py-4 flex items-center justify-between">
+    <nav className={`fixed top-0 left-0 right-0 z-50 glass px-6 py-4 flex items-center justify-between transition-colors duration-300 ${
+      isDarkMode 
+        ? 'text-white' 
+        : 'text-slate-900'
+    }`}>
       <div 
         className="flex items-center gap-2 cursor-pointer" 
         onClick={() => onNavigate('dashboard')}

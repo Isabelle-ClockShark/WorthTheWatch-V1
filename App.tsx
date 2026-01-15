@@ -57,7 +57,8 @@ const App: React.FC = () => {
     return {
       selectedServices: ['Netflix', 'Disney+'],
       filterByServices: false,
-      declinedMediaTitles: []
+      declinedMediaTitles: [],
+      isDarkMode: true
     };
   });
 
@@ -256,33 +257,52 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20 text-slate-100 relative">
+    <div className={`min-h-screen pb-20 relative transition-colors duration-300 ${
+      userSettings.isDarkMode 
+        ? 'text-slate-100' 
+        : 'text-slate-900 bg-white'
+    }`}>
       <Navbar 
         onNavigate={setActiveView} 
         activeView={activeView} 
         onOpenAccount={() => setShowAccountModal(true)}
+        isDarkMode={userSettings.isDarkMode}
       />
 
       {/* Account Modal */}
       {showAccountModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 animate-in fade-in duration-300">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowAccountModal(false)} />
-          <div className="relative glass w-full max-w-xl p-8 rounded-[2.5rem] shadow-2xl border border-white/10 animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh]">
+          <div className={`absolute inset-0 backdrop-blur-sm transition-colors duration-300 ${
+            userSettings.isDarkMode ? 'bg-black/60' : 'bg-black/40'
+          }`} onClick={() => setShowAccountModal(false)} />
+          <div className={`relative glass w-full max-w-xl p-8 rounded-[2.5rem] shadow-2xl border animate-in zoom-in-95 duration-300 overflow-y-auto max-h-[90vh] transition-colors duration-300 ${
+            userSettings.isDarkMode 
+              ? 'border-white/10' 
+              : 'border-slate-300 bg-slate-50'
+          }`}>
             <button 
               onClick={() => setShowAccountModal(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors p-2"
+              className={`absolute top-6 right-6 transition-colors p-2 ${
+                userSettings.isDarkMode
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
             
-            <h2 className="text-3xl font-bold mb-6 text-white flex items-center gap-3">
+            <h2 className={`text-3xl font-bold mb-6 flex items-center gap-3 transition-colors duration-300 ${
+              userSettings.isDarkMode ? 'text-white' : 'text-slate-900'
+            }`}>
               <span className="p-2 bg-indigo-600 rounded-xl">👤</span>
               My Account
             </h2>
 
             <div className="space-y-8">
               <div>
-                <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Your Services</h3>
+                <h3 className={`text-sm font-bold uppercase tracking-widest mb-4 transition-colors duration-300 ${
+                  userSettings.isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                }`}>Your Services</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {STREAMING_SERVICES.map(service => (
                     <button
@@ -291,7 +311,9 @@ const App: React.FC = () => {
                       className={`px-4 py-3 rounded-xl text-xs font-bold transition-all border ${
                         userSettings.selectedServices.includes(service)
                           ? 'bg-indigo-600 border-indigo-500 text-white shadow-lg shadow-indigo-500/20'
-                          : 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20'
+                          : userSettings.isDarkMode
+                          ? 'bg-slate-800/50 border-white/5 text-slate-400 hover:border-white/20'
+                          : 'bg-slate-200 border-slate-300 text-slate-700 hover:border-slate-400'
                       }`}
                     >
                       {service}
@@ -300,29 +322,74 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-6 bg-slate-800/40 rounded-3xl border border-white/5">
+              <div className={`p-6 rounded-3xl border transition-colors duration-300 ${
+                userSettings.isDarkMode
+                  ? 'bg-slate-800/40 border-white/5'
+                  : 'bg-slate-100 border-slate-300'
+              }`}>
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <h4 className="font-bold text-white mb-1">Service Filter</h4>
-                    <p className="text-xs text-slate-400">Only show releases from your selected services in "New Today".</p>
+                    <h4 className={`font-bold mb-1 transition-colors duration-300 ${
+                      userSettings.isDarkMode ? 'text-white' : 'text-slate-900'
+                    }`}>Service Filter</h4>
+                    <p className={`text-xs transition-colors duration-300 ${
+                      userSettings.isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                    }`}>Only show releases from your selected services in "New Today".</p>
                   </div>
                   <button 
                     onClick={() => setUserSettings(prev => ({ ...prev, filterByServices: !prev.filterByServices }))}
                     className={`relative w-14 h-8 rounded-full transition-all ${
-                      userSettings.filterByServices ? 'bg-indigo-600' : 'bg-slate-700'
+                      userSettings.filterByServices ? 'bg-indigo-600' : userSettings.isDarkMode ? 'bg-slate-700' : 'bg-slate-300'
                     }`}
                   >
-                    <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${
+                    <div className={`absolute top-1 w-6 h-6 rounded-full transition-all ${
+                      userSettings.isDarkMode ? 'bg-white' : 'bg-slate-50'
+                    } ${
                       userSettings.filterByServices ? 'left-7' : 'left-1'
                     }`} />
                   </button>
                 </div>
               </div>
 
+              <div className={`p-6 rounded-3xl border transition-colors duration-300 ${
+                userSettings.isDarkMode
+                  ? 'bg-slate-800/40 border-white/5'
+                  : 'bg-slate-100 border-slate-300'
+              }`}>
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h4 className={`font-bold mb-1 transition-colors duration-300 ${
+                      userSettings.isDarkMode ? 'text-white' : 'text-slate-900'
+                    }`}>Dark Mode</h4>
+                    <p className={`text-xs transition-colors duration-300 ${
+                      userSettings.isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                    }`}>Switch between light and dark theme.</p>
+                  </div>
+                  <button 
+                    onClick={() => setUserSettings(prev => ({ ...prev, isDarkMode: !prev.isDarkMode }))}
+                    className={`relative w-14 h-8 rounded-full transition-all ${
+                      userSettings.isDarkMode ? 'bg-indigo-600' : 'bg-slate-400'
+                    }`}
+                  >
+                    <div className={`absolute top-1 w-6 h-6 rounded-full transition-all ${
+                      userSettings.isDarkMode ? 'bg-white' : 'bg-slate-50'
+                    } ${
+                      userSettings.isDarkMode ? 'left-7' : 'left-1'
+                    }`} />
+                  </button>
+                </div>
+              </div>
+
               {userSettings.declinedMediaTitles.length > 0 && (
-                <div className="p-6 bg-slate-800/40 rounded-3xl border border-white/5">
+                <div className={`p-6 rounded-3xl border transition-colors duration-300 ${
+                  userSettings.isDarkMode
+                    ? 'bg-slate-800/40 border-white/5'
+                    : 'bg-slate-100 border-slate-300'
+                }`}>
                   <div className="flex items-center justify-between gap-4 mb-4">
-                    <h4 className="font-bold text-white">Improve Recommendations</h4>
+                    <h4 className={`font-bold transition-colors duration-300 ${
+                      userSettings.isDarkMode ? 'text-white' : 'text-slate-900'
+                    }`}>Improve Recommendations</h4>
                     <button 
                       onClick={resetDeclinedItems}
                       className="text-[10px] font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-widest"
@@ -330,10 +397,16 @@ const App: React.FC = () => {
                       Reset All
                     </button>
                   </div>
-                  <p className="text-xs text-slate-400 mb-4">You've declined {userSettings.declinedMediaTitles.length} items. We're using this to refine your matches.</p>
+                  <p className={`text-xs mb-4 transition-colors duration-300 ${
+                    userSettings.isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                  }`}>You've declined {userSettings.declinedMediaTitles.length} items. We're using this to refine your matches.</p>
                   <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2 no-scrollbar">
                     {userSettings.declinedMediaTitles.map(t => (
-                      <span key={t} className="px-2 py-1 bg-slate-900/60 rounded text-[10px] text-slate-500 border border-white/5">{t}</span>
+                      <span key={t} className={`px-2 py-1 rounded text-[10px] border transition-colors duration-300 ${
+                        userSettings.isDarkMode
+                          ? 'bg-slate-900/60 text-slate-500 border-white/5'
+                          : 'bg-slate-200 text-slate-600 border-slate-300'
+                      }`}>{t}</span>
                     ))}
                   </div>
                 </div>
@@ -341,7 +414,11 @@ const App: React.FC = () => {
 
               <button 
                 onClick={() => setShowAccountModal(false)}
-                className="w-full bg-white text-black hover:bg-indigo-50 font-black py-4 rounded-2xl transition-all shadow-xl uppercase tracking-widest text-sm"
+                className={`w-full font-black py-4 rounded-2xl transition-all shadow-xl uppercase tracking-widest text-sm ${
+                  userSettings.isDarkMode
+                    ? 'bg-white text-black hover:bg-indigo-50'
+                    : 'bg-slate-900 text-white hover:bg-indigo-600'
+                }`}
               >
                 Save Preferences
               </button>
